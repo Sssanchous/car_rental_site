@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Отчёты{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">Отчёты и аналитика</h2>
+
+<div class="row g-4">
+
+    <!-- PDF отчёты -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">📄 Договоры аренды</h5>
+                <p class="card-text text-muted">
+                    Подробный отчёт по всем договорам: даты, клиенты, суммы, автомобили.
+                </p>
+                <a href="{% url 'report_contracts' %}" class="btn btn-primary w-100">
+                    Скачать PDF
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">📘 Востребованность автомобилей</h5>
+                <p class="card-text text-muted">
+                    Анализ использования автомобилей: частота, последний клиент, даты.
+                </p>
+                <a href="{% url 'report_cars' %}" class="btn btn-primary w-100">
+                    Скачать PDF
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Графики -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">📊 Прибыль по месяцам</h5>
+                <p class="card-text text-muted">
+                    График дохода компании по месяцам.
+                </p>
+                <a href="{% url 'dashboard_revenue' %}" class="btn btn-outline-primary w-100">
+                    Открыть график
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">📈 Количество договоров</h5>
+                <p class="card-text text-muted">
+                    Динамика количества заключённых договоров.
+                </p>
+                <a href="{% url 'dashboard_contracts' %}" class="btn btn-outline-primary w-100">
+                    Открыть график
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">💰 Средний чек</h5>
+                <p class="card-text text-muted">
+                    Средняя выручка с одного договора по месяцам.
+                </p>
+                <a href="{% url 'dashboard_avgcheck' %}" class="btn btn-outline-primary w-100">
+                    Открыть график
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">🚗 Категории автомобилей</h5>
+                <p class="card-text text-muted">
+                    Распределение выручки по категориям авто.
+                </p>
+                <a href="{% url 'dashboard_categories' %}" class="btn btn-outline-primary w-100">
+                    Открыть график
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">🔥 ТОП-5 автомобилей</h5>
+                <p class="card-text text-muted">
+                    Какие машины приносят максимальную прибыль.
+                </p>
+                <a href="{% url 'dashboard_topcars' %}" class="btn btn-outline-primary w-100">
+                    Открыть график
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

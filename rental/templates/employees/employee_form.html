@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">{{ title }}</h2>
+
+<div class="card p-4 shadow-sm">
+<form method="post" class="row g-3">
+    {% csrf_token %}
+
+    <div class="col-md-6">
+        <label class="form-label">ФИО</label>
+        {{ form.full_name }}
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Паспорт</label>
+        {{ form.passport }}
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Должность</label>
+        {{ form.role }}
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Филиал</label>
+        {{ form.branch }}
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Телефон</label>
+        {{ form.phone }}
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Email</label>
+        {{ form.email }}
+    </div>
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger mt-3">
+        <ul class="mb-0">
+        {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if form.errors %}
+    <div class="alert alert-danger mt-3">
+        <ul class="mb-0">
+        {% for field, errors in form.errors.items %}
+            {% for error in errors %}
+                <li><strong>{{ field }}:</strong> {{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="col-12 mt-3">
+        <button type="submit" class="btn btn-success px-4">Сохранить</button>
+        <a href="{% url 'employee_list' %}" class="btn btn-secondary ms-2">Назад</a>
+    </div>
+
+</form>
+</div>
+
+{% endblock %}

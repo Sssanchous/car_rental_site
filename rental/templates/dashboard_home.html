@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Статистика{% endblock %}
+
+{% block content %}
+
+<h1 class="mb-4">Общая статистика</h1>
+
+<div class="row g-4">
+
+    <div class="col-md-3">
+        <div class="card text-bg-primary shadow">
+            <div class="card-body">
+                <h5 class="card-title">Клиенты</h5>
+                <p class="card-text fs-3">{{ total_clients }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-bg-success shadow">
+            <div class="card-body">
+                <h5 class="card-title">Автомобили</h5>
+                <p class="card-text fs-3">{{ total_cars }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-bg-warning shadow">
+            <div class="card-body">
+                <h5 class="card-title">Активные договоры</h5>
+                <p class="card-text fs-3">{{ active_contracts }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-bg-danger shadow">
+            <div class="card-body">
+                <h5 class="card-title">Выручка</h5>
+                <p class="card-text fs-3">{{ total_revenue }} ₽</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<hr class="my-4">
+
+<h3>Выручка по месяцам</h3>
+
+<div style="height: 300px;">
+    <canvas id="miniChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+fetch("/reports/dashboard/revenue/json/")
+    .then(response => response.json())
+    .then(data => {
+        new Chart(document.getElementById("miniChart"), {
+            type: "line",
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: "Прибыль",
+                    data: data.values,
+                    borderWidth: 2
+                }]
+            }
+        });
+    });
+</script>
+
+{% endblock %}

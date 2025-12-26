@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Договоры{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Договоры аренды</h2>
+
+<form method="get" class="mb-3 d-flex">
+    <input type="text" name="search" class="form-control w-auto me-2"
+           placeholder="Поиск..." value="{{ search }}">
+    <button class="btn btn-primary">Найти</button>
+</form>
+
+<a class="btn btn-success mb-3" href="{% url 'contract_add' %}">Добавить договор</a>
+
+<table class="table table-bordered table-striped">
+    <tr>
+        <th>Клиент</th>
+        <th>Автомобиль</th>
+        <th>
+            <a href="?sort={% if sort == 'issue_asc' %}issue_desc{% else %}issue_asc{% endif %}"
+            class="text-decoration-none">
+
+                Дата выдачи
+
+                {% if sort == "issue_asc" %}
+                    ↑
+                {% elif sort == "issue_desc" %}
+                    ↓
+                {% endif %}
+            </a>
+        </th>
+
+        <th>Дата возврата</th>
+        <th>Сумма</th>
+        <th></th>
+    </tr>
+
+    {% for c in contracts %}
+    <tr>
+        <td>{{ c.client.full_name }}</td>
+        <td>{{ c.car.plate }} ({{ c.car.model }})</td>
+        <td>{{ c.issue_date }}</td>
+        <td>{{ c.return_date }}</td>
+        <td>{{ c.total_amount }} ₽</td>
+        <td class="text-nowrap">
+            <a href="{% url 'contract_edit' c.contract_id %}" class="btn btn-sm btn-primary">Изм.</a>
+            <a href="{% url 'contract_delete' c.contract_id %}" class="btn btn-sm btn-danger">Удал.</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

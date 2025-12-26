@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">{{ title }}</h2>
+
+<div class="card shadow-sm p-4">
+<form method="post" id="contractForm" class="row g-3">
+    {% csrf_token %}
+
+    <div class="col-md-6">
+        <label class="form-label">Статус договора</label>
+        {{ form.cstatus }}
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Клиент</label>
+        {{ form.client }}
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Автомобиль</label>
+        {{ form.car }}
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Дата создания</label>
+        {{ form.created_at }}
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Дата выдачи</label>
+        {{ form.issue_date }}
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Дата возврата</label>
+        {{ form.return_date }}
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Способ оплаты</label>
+        {{ form.payment }}
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Филиал выдачи</label>
+        {{ form.issue_branch }}
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Филиал возврата</label>
+        {{ form.return_branch }}
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Цена за сутки</label>
+        <input type="number" id="id_daily_price" name="daily_price" 
+               class="form-control" value="{{ form.daily_price.value|default_if_none:'' }}" readonly>
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Итоговая сумма</label>
+        <input type="number" id="id_total_amount" name="total_amount" 
+               class="form-control" value="{{ form.total_amount.value|default_if_none:'' }}">
+    </div>
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger mt-3">
+        <ul class="mb-0">
+        {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if form.errors %}
+    <div class="alert alert-danger mt-3">
+        <ul class="mb-0">
+        {% for field, errors in form.errors.items %}
+            {% for error in errors %}
+                <li><strong>{{ field }}:</strong> {{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="col-12 mt-3">
+        <button type="submit" class="btn btn-success px-4">Сохранить</button>
+        <a href="{% url 'contract_list' %}" class="btn btn-secondary ms-2">Назад</a>
+    </div>
+
+</form>
+</div>
+
+<script>
+function calculateTotal() {
+    const start = document.getElementById("id_issue_date").value;
+    const end = document.getElementById("id_return_date").value;
+    const price = parseFloat(document.getElementById("id_daily_price").value) || 0;
+
+    if (start && end) {
+        const d1 = new Date(start);
+        const d2 = new Date(end);
+        const days = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24));
+        if (days > 0) {
+            document.getElementById("id_total_amount").value = (days * price).toFixed(2);
+        }
+    }
+}
+
+document.getElementById("id_issue_date").addEventListener("change", calculateTotal);
+document.getElementById("id_return_date").addEventListener("change", calculateTotal);
+document.getElementById("id_daily_price").addEventListener("input", calculateTotal);
+
+document.getElementById("id_car").addEventListener("change", function () {
+    const carId = this.value;
+    if (!carId) return;
+
+    fetch(`/cars/get_price/${carId}/`)
+        .then(resp => resp.json())
+        .then(data => {
+            document.getElementById("id_daily_price").value = data.daily_price;
+            calculateTotal();
+        });
+});
+</script>
+
+{% endblock %}
