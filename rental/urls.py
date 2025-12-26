@@ -2,23 +2,15 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path('', views.dashboard_home, name='home'),
+    path('dashboard/', views.dashboard_home, name='dashboard'),
+
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
-
-    path('', views.dashboard_home, name='dashboard_home'),
-    path('dashboard/', views.dashboard_home, name='dashboard'),
 
     path('reports/', views.reports_page, name='reports_page'),
     path('reports/contracts/', views.report_contracts, name='report_contracts'),
     path('reports/cars/', views.report_cars, name='report_cars'),
-
-    path('reports/dashboard/revenue/', views.dashboard_revenue, name='dashboard_revenue'),
-    path('reports/dashboard/contracts/', views.dashboard_contracts, name='dashboard_contracts'),
-    path('reports/dashboard/avgcheck/', views.dashboard_avgcheck, name='dashboard_avgcheck'),
-    path('reports/dashboard/categories/', views.dashboard_categories, name='dashboard_categories'),
-    path('reports/dashboard/topcars/', views.dashboard_topcars, name='dashboard_topcars'),
-
-    path('reports/dashboard/revenue/json/', views.dashboard_revenue_json, name='dashboard_revenue_json'),
 
     path('clients/', views.client_list, name='client_list'),
     path('clients/add/', views.client_add, name='client_add'),
@@ -40,4 +32,11 @@ urlpatterns = [
     path('employees/add/', views.employee_add, name='employee_add'),
     path('employees/<int:pk>/edit/', views.employee_edit, name='employee_edit'),
     path('employees/<int:pk>/delete/', views.employee_delete, name='employee_delete'),
+    path("dashboard/contracts/", views.dashboard_contracts, name="dashboard_contracts"),
+    path("dashboard/revenue/", views.dashboard_revenue, name="dashboard_revenue"),
+    path("dashboard/avgcheck/", views.dashboard_avgcheck, name="dashboard_avgcheck"),
+    path("dashboard/categories/", views.dashboard_categories, name="dashboard_categories"),
+    path("dashboard/topcars/", views.dashboard_topcars, name="dashboard_topcars"),
+    path("statistics/", views.statistics_page, name="statistics"),
+
 ]

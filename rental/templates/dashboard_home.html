@@ -1,18 +1,15 @@
 {% extends "base.html" %}
-
-{% block title %}Статистика{% endblock %}
+{% block title %}Главная{% endblock %}
 
 {% block content %}
+<h1 class="mb-4">Панель управления</h1>
 
-<h1 class="mb-4">Общая статистика</h1>
-
-<div class="row g-4">
-
+<div class="row g-4 mb-4">
     <div class="col-md-3">
         <div class="card text-bg-primary shadow">
             <div class="card-body">
-                <h5 class="card-title">Клиенты</h5>
-                <p class="card-text fs-3">{{ total_clients }}</p>
+                <h6>Клиенты</h6>
+                <div class="fs-3">{{ total_clients }}</div>
             </div>
         </div>
     </div>
@@ -20,8 +17,8 @@
     <div class="col-md-3">
         <div class="card text-bg-success shadow">
             <div class="card-body">
-                <h5 class="card-title">Автомобили</h5>
-                <p class="card-text fs-3">{{ total_cars }}</p>
+                <h6>Автомобили</h6>
+                <div class="fs-3">{{ total_cars }}</div>
             </div>
         </div>
     </div>
@@ -29,8 +26,8 @@
     <div class="col-md-3">
         <div class="card text-bg-warning shadow">
             <div class="card-body">
-                <h5 class="card-title">Активные договоры</h5>
-                <p class="card-text fs-3">{{ active_contracts }}</p>
+                <h6>Активные договоры</h6>
+                <div class="fs-3">{{ active_contracts }}</div>
             </div>
         </div>
     </div>
@@ -38,40 +35,75 @@
     <div class="col-md-3">
         <div class="card text-bg-danger shadow">
             <div class="card-body">
-                <h5 class="card-title">Выручка</h5>
-                <p class="card-text fs-3">{{ total_revenue }} ₽</p>
+                <h6>Выручка</h6>
+                <div class="fs-3">{{ total_revenue }} ₽</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card shadow">
+            <div class="card-body text-center">
+                <h6>Свободные авто</h6>
+                <div class="fs-2 text-success">{{ free_cars }}</div>
             </div>
         </div>
     </div>
 
+    <div class="col-md-3">
+        <div class="card shadow">
+            <div class="card-body text-center">
+                <h6>Занятые авто</h6>
+                <div class="fs-2 text-danger">{{ busy_cars }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow">
+            <div class="card-body text-center">
+                <h6>Договоры сегодня</h6>
+                <div class="fs-2">{{ contracts_today }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow">
+            <div class="card-body text-center">
+                <h6>Договоры за 7 дней</h6>
+                <div class="fs-2">{{ contracts_week }}</div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<hr class="my-4">
+<h4 class="mb-3">Последние договоры</h4>
 
-<h3>Выручка по месяцам</h3>
-
-<div style="height: 300px;">
-    <canvas id="miniChart"></canvas>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-fetch("/reports/dashboard/revenue/json/")
-    .then(response => response.json())
-    .then(data => {
-        new Chart(document.getElementById("miniChart"), {
-            type: "line",
-            data: {
-                labels: data.labels,
-                datasets: [{
-                    label: "Прибыль",
-                    data: data.values,
-                    borderWidth: 2
-                }]
-            }
-        });
-    });
-</script>
-
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Клиент</th>
+            <th>Автомобиль</th>
+            <th>Дата выдачи</th>
+            <th>Сумма</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in last_contracts %}
+        <tr>
+            <td>{{ c.client.full_name }}</td>
+            <td>{{ c.car.brand }} {{ c.car.model }}</td>
+            <td>{{ c.issue_date }}</td>
+            <td>{{ c.total_amount }} ₽</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4" class="text-center">Договоров нет</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

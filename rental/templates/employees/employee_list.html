@@ -4,47 +4,51 @@
 {% block content %}
 <h2 class="mb-4">Сотрудники</h2>
 
-<form method="get" class="mb-3 d-flex">
-    <input type="text" name="search" class="form-control w-auto me-2"
+<form method="get" class="mb-3 d-flex gap-2">
+    <input type="text" name="search" class="form-control w-auto"
            placeholder="Поиск..." value="{{ search }}">
+    <input type="hidden" name="sort" value="{{ sort }}">
     <button class="btn btn-primary">Найти</button>
 </form>
 
-<a class="btn btn-success mb-3" href="{% url 'employee_add' %}">Добавить сотрудника</a>
+{% if user.is_staff %}
+<a href="{% url 'employee_add' %}" class="btn btn-success mb-3">Добавить сотрудника</a>
+{% endif %}
 
-<table class="table table-bordered table-striped">
-    <tr>
-        <th>
-            <a href="?sort={% if sort == 'name_asc' %}name_desc{% else %}name_asc{% endif %}">
-                ФИО
-                {% if sort == 'name_asc' %}
-                    ↑
-                {% elif sort == 'name_desc' %}
-                    ↓
-                {% endif %}
-            </a>
-        </th>
-
-        <th>Должность</th>
-        <th>Филиал</th>
-        <th>Телефон</th>
-        <th>Email</th>
-        <th></th>
-    </tr>
-
-    {% for e in employees %}
-    <tr>
-        <td>{{ e.full_name }}</td>
-        <td>{{ e.role.name }}</td>
-        <td>{{ e.branch.name }}</td>
-        <td>{{ e.phone }}</td>
-        <td>{{ e.email }}</td>
-        <td class="text-nowrap">
-            <a href="{% url 'employee_edit' e.employee_id %}" class="btn btn-sm btn-primary">Изм.</a>
-            <a href="{% url 'employee_delete' e.employee_id %}" class="btn btn-sm btn-danger">Удал.</a>
-        </td>
-    </tr>
-    {% endfor %}
+<table class="table table-bordered table-striped align-middle">
+    <thead>
+        <tr>
+            <th>
+                <a href="?search={{ search|urlencode }}&sort={% if sort == 'name_asc' %}name_desc{% else %}name_asc{% endif %}">
+                    ФИО
+                    {% if sort == 'name_asc' %}↑{% elif sort == 'name_desc' %}↓{% endif %}
+                </a>
+            </th>
+            <th>Должность</th>
+            <th>Филиал</th>
+            <th>Телефон</th>
+            <th>Email</th>
+            {% if user.is_staff %}<th></th>{% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for e in employees %}
+        <tr>
+            <td>{{ e.full_name }}</td>
+            <td>{{ e.role.name }}</td>
+            <td>{{ e.branch.name }}</td>
+            <td>{{ e.phone }}</td>
+            <td>{{ e.email }}</td>
+            {% if user.is_staff %}
+            <td class="text-nowrap">
+                <a href="{% url 'employee_edit' e.employee_id %}" class="btn btn-sm btn-primary">Изм.</a>
+                <a href="{% url 'employee_delete' e.employee_id %}" class="btn btn-sm btn-danger">Удал.</a>
+            </td>
+            {% endif %}
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="text-center">Сотрудников нет</td></tr>
+        {% endfor %}
+    </tbody>
 </table>
-
 {% endblock %}

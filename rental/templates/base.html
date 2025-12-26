@@ -27,6 +27,7 @@
               <li class="nav-item"><a class="nav-link" href="/contracts/">Договоры</a></li>
               <li class="nav-item"><a class="nav-link" href="/employees/">Сотрудники</a></li>
               <li class="nav-item"><a class="nav-link" href="/reports/">Отчёты</a></li>
+               <li class="nav-item"><a class="nav-link" href="{% url 'statistics' %}">📊 Статистика</a></li>
           </ul>
 
           {% if user.is_authenticated %}

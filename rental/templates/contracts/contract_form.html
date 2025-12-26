@@ -2,15 +2,13 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-
 <h2 class="mb-4">{{ title }}</h2>
 
-<div class="card shadow-sm p-4">
-<form method="post" id="contractForm" class="row g-3">
+<form method="post" class="row g-3">
     {% csrf_token %}
 
     <div class="col-md-6">
-        <label class="form-label">Статус договора</label>
+        <label class="form-label">Статус</label>
         {{ form.cstatus }}
     </div>
 
@@ -25,7 +23,7 @@
     </div>
 
     <div class="col-md-6">
-        <label class="form-label">Дата создания</label>
+        <label class="form-label">Дата оформления</label>
         {{ form.created_at }}
     </div>
 
@@ -40,7 +38,7 @@
     </div>
 
     <div class="col-md-6">
-        <label class="form-label">Способ оплаты</label>
+        <label class="form-label">Форма оплаты</label>
         {{ form.payment }}
     </div>
 
@@ -56,77 +54,69 @@
 
     <div class="col-md-6">
         <label class="form-label">Цена за сутки</label>
-        <input type="number" id="id_daily_price" name="daily_price" 
-               class="form-control" value="{{ form.daily_price.value|default_if_none:'' }}" readonly>
+        {{ form.daily_price }}
     </div>
 
     <div class="col-md-6">
         <label class="form-label">Итоговая сумма</label>
-        <input type="number" id="id_total_amount" name="total_amount" 
-               class="form-control" value="{{ form.total_amount.value|default_if_none:'' }}">
+        {{ form.total_amount }}
     </div>
-
-    {% if form.non_field_errors %}
-    <div class="alert alert-danger mt-3">
-        <ul class="mb-0">
-        {% for error in form.non_field_errors %}
-            <li>{{ error }}</li>
-        {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
 
     {% if form.errors %}
-    <div class="alert alert-danger mt-3">
-        <ul class="mb-0">
-        {% for field, errors in form.errors.items %}
-            {% for error in errors %}
-                <li><strong>{{ field }}:</strong> {{ error }}</li>
-            {% endfor %}
-        {% endfor %}
-        </ul>
+    <div class="col-12">
+        <div class="alert alert-danger">
+            {{ form.errors }}
+        </div>
     </div>
     {% endif %}
 
     <div class="col-12 mt-3">
-        <button type="submit" class="btn btn-success px-4">Сохранить</button>
+        <button class="btn btn-success">Сохранить</button>
         <a href="{% url 'contract_list' %}" class="btn btn-secondary ms-2">Назад</a>
     </div>
-
 </form>
-</div>
 
 <script>
-function calculateTotal() {
-    const start = document.getElementById("id_issue_date").value;
-    const end = document.getElementById("id_return_date").value;
-    const price = parseFloat(document.getElementById("id_daily_price").value) || 0;
+document.addEventListener("DOMContentLoaded", function () {
+    const carSelect = document.getElementById("id_car");
+    const issueDate = document.getElementById("id_issue_date");
+    const returnDate = document.getElementById("id_return_date");
+    const dailyPrice = document.getElementById("id_daily_price");
+    const totalAmount = document.getElementById("id_total_amount");
 
-    if (start && end) {
-        const d1 = new Date(start);
-        const d2 = new Date(end);
-        const days = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24));
+    totalAmount.readOnly = true;
+
+    function calculateTotal() {
+        if (!issueDate.value || !returnDate.value || !dailyPrice.value) {
+            totalAmount.value = "";
+            return;
+        }
+
+        const start = new Date(issueDate.value);
+        const end = new Date(returnDate.value);
+
+        const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+
         if (days > 0) {
-            document.getElementById("id_total_amount").value = (days * price).toFixed(2);
+            totalAmount.value = (days * parseFloat(dailyPrice.value)).toFixed(2);
         }
     }
-}
 
-document.getElementById("id_issue_date").addEventListener("change", calculateTotal);
-document.getElementById("id_return_date").addEventListener("change", calculateTotal);
-document.getElementById("id_daily_price").addEventListener("input", calculateTotal);
+    carSelect.addEventListener("change", function () {
+        if (!this.value) return;
 
-document.getElementById("id_car").addEventListener("change", function () {
-    const carId = this.value;
-    if (!carId) return;
+        fetch(`/cars/get_price/${this.value}/`)
+            .then(r => r.json())
+            .then(data => {
+                dailyPrice.value = data.daily_price;
+                calculateTotal();
+            });
+    });
 
-    fetch(`/cars/get_price/${carId}/`)
-        .then(resp => resp.json())
-        .then(data => {
-            document.getElementById("id_daily_price").value = data.daily_price;
-            calculateTotal();
-        });
+    issueDate.addEventListener("change", calculateTotal);
+    returnDate.addEventListener("change", calculateTotal);
 });
 </script>
+
 
 {% endblock %}

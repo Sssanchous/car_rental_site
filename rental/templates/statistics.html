@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Статистика{% endblock %}
+
+{% block content %}
+<h1 style="margin-bottom: 30px;">Статистика и аналитика</h1>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;">
+
+    <a href="{% url 'dashboard_contracts' %}" class="stat-card">
+        📄 Количество договоров
+    </a>
+
+    <a href="{% url 'dashboard_revenue' %}" class="stat-card">
+        💰 Выручка по месяцам
+    </a>
+
+    <a href="{% url 'dashboard_avgcheck' %}" class="stat-card">
+        📊 Средний чек
+    </a>
+
+    <a href="{% url 'dashboard_categories' %}" class="stat-card">
+        🚗 Категории автомобилей
+    </a>
+
+    <a href="{% url 'dashboard_topcars' %}" class="stat-card">
+        Автомобили с наибольшей выручкой
+    </a>
+
+</div>
+
+<style>
+.stat-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 110px;
+    background: #f5f7fa;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    text-decoration: none;
+    color: #333;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+    background: #e8f0ff;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+}
+</style>
+
+{% endblock %}
